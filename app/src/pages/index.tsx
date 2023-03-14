@@ -1,15 +1,32 @@
 import Head from "next/head";
-import React from "react";
+import React, { useState } from "react";
 import { Layer, Map, Source } from "react-map-gl";
 import DeckGL from "@deck.gl/react";
 import { type GeoJSON } from "geojson";
 import Points1 from "../data/points1.json";
+import Points2 from "../data/points2.json";
+import Points3 from "../data/points3.json";
+import { LayerVisibleControl } from "@/components/LayerVisibleControl";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1Ijoiemh5MDIxNiIsImEiOiJjbGY3c29qM20wNHEwM3BtdjhpbDc2dzhyIn0.__1GnOIIG6VX31o6m7CQ4w"; // Set your mapbox token here
 
+const renderGeoJson = (data: GeoJSON, color: string) => (
+  <Source type="geojson" data={data}>
+    <Layer
+      type="circle"
+      paint={{
+        "circle-radius": 6,
+        "circle-color": color,
+      }}
+    />
+  </Source>
+);
+
 // https://github.com/visgl/react-map-gl/tree/master/examples/geojson
 function Home() {
+  const [layersVisible, setLayersVisible] = useState([true, true, true]);
+
   return (
     <>
       <Head>
@@ -27,15 +44,23 @@ function Home() {
         controller={true}
       >
         <Map
-          mapStyle="mapbox://styles/mapbox/light-v9"
+          mapStyle="mapbox://styles/mapbox/streets-v12"
           mapboxAccessToken={MAPBOX_TOKEN}
           interactiveLayerIds={["data"]}
         >
-          <Source type="geojson" data={Points1 as GeoJSON}>
-            {/*<Layer />*/}
-          </Source>
+          {layersVisible[0] && renderGeoJson(Points1 as GeoJSON, "red")}
+          {layersVisible[1] && renderGeoJson(Points2 as GeoJSON, "yellow")}
+          {layersVisible[2] && renderGeoJson(Points3 as GeoJSON, "blue")}
         </Map>
       </DeckGL>
+      <LayerVisibleControl
+        layersVisible={layersVisible}
+        onVisibleChanged={(index, visible) => {
+          setLayersVisible((prev) =>
+            prev.map((v, i) => (i === index ? visible : v))
+          );
+        }}
+      />
     </>
   );
 }
