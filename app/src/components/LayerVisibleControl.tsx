@@ -12,6 +12,7 @@ export const LayerVisibleControl: React.FC<Props> = ({
   return (
     <div
       style={{
+        color: "white",
         position: "absolute",
         padding: "16px",
         background: "rgba(0,0,0,0.8)",
