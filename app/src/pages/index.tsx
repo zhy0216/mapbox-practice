@@ -11,8 +11,8 @@ import { GeoHouse } from "../types";
 const MAPBOX_TOKEN =
   "pk.eyJ1Ijoiemh5MDIxNiIsImEiOiJjbGY3c29qM20wNHEwM3BtdjhpbDc2dzhyIn0.__1GnOIIG6VX31o6m7CQ4w"; // Set your mapbox token here
 
-const renderGeoJson = ({ data, color, haloColor }: GeoHouse) => (
-  <Source type="geojson" data={data}>
+const renderGeoJson = ({ data, color, haloColor, id }: GeoHouse) => (
+  <Source type="geojson" data={data} key={id}>
     <Layer
       type="circle"
       paint={{
@@ -40,12 +40,14 @@ const renderGeoJson = ({ data, color, haloColor }: GeoHouse) => (
 function Home() {
   const [geoHouses, seGeoHouses] = useState<GeoHouse[]>([
     {
+      id: 1,
       title: "图层1",
       data: Points1 as GeoJSON,
       color: "red",
       visible: true,
     },
     {
+      id: 2,
       title: "图层2",
       data: Points2 as GeoJSON,
       color: "blue",
@@ -88,6 +90,7 @@ function Home() {
         onLayerAdded={(data) => {
           seGeoHouses((prev) =>
             prev.concat({
+              id: prev.length + 1,
               title: `图层${prev.length + 1}`,
               data,
               color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
