@@ -5,8 +5,7 @@ import DeckGL from "@deck.gl/react";
 import { type GeoJSON } from "geojson";
 import Points1 from "../data/points1.json";
 import Points2 from "../data/points2.json";
-import Points3 from "../data/points3.json";
-import { LayerVisibleControl } from "@/components/LayerVisibleControl";
+import { LayerManagerControl } from "@/components/LayerManagerControl";
 import { GeoHouse } from "../types";
 
 const MAPBOX_TOKEN =
@@ -79,11 +78,21 @@ function Home() {
           {geoHouses.map((gh) => gh.visible && renderGeoJson(gh))}
         </Map>
       </DeckGL>
-      <LayerVisibleControl
-        geoHouses={geoHouses}
+      <LayerManagerControl
+        layersVisible={geoHouses.map((gh) => gh.visible)}
         onVisibleChanged={(index, visible) => {
           seGeoHouses((prev) =>
             prev.map((v, i) => (i === index ? { ...v, visible } : v))
+          );
+        }}
+        onLayerAdded={(data) => {
+          seGeoHouses((prev) =>
+            prev.concat({
+              title: `图层${prev.length + 1}`,
+              data,
+              color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+              visible: true,
+            })
           );
         }}
       />
