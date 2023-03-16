@@ -11,13 +11,26 @@ import { LayerVisibleControl } from "@/components/LayerVisibleControl";
 const MAPBOX_TOKEN =
   "pk.eyJ1Ijoiemh5MDIxNiIsImEiOiJjbGY3c29qM20wNHEwM3BtdjhpbDc2dzhyIn0.__1GnOIIG6VX31o6m7CQ4w"; // Set your mapbox token here
 
-const renderGeoJson = (data: GeoJSON, color: string) => (
+const renderGeoJson = (data: GeoJSON, color: string, haloColor?: string) => (
   <Source type="geojson" data={data}>
     <Layer
       type="circle"
       paint={{
         "circle-radius": 6,
         "circle-color": color,
+      }}
+    />
+    <Layer
+      type="symbol"
+      layout={{
+        "text-field": ["get", "name"],
+        "text-size": 12,
+        "text-offset": [0, -1],
+      }}
+      paint={{
+        "text-color": color,
+        "text-halo-color": haloColor ?? "black",
+        "text-halo-width": 1,
       }}
     />
   </Source>
@@ -50,7 +63,8 @@ function Home() {
         >
           {layersVisible[0] && renderGeoJson(Points1 as GeoJSON, "red")}
           {layersVisible[1] && renderGeoJson(Points2 as GeoJSON, "yellow")}
-          {layersVisible[2] && renderGeoJson(Points3 as GeoJSON, "blue")}
+          {layersVisible[2] &&
+            renderGeoJson(Points3 as GeoJSON, "blue", "white")}
         </Map>
       </DeckGL>
       <LayerVisibleControl
