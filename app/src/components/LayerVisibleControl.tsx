@@ -1,12 +1,13 @@
 import React from "react";
+import { GeoHouse } from "@/types";
 
 interface Props {
-  layersVisible: boolean[];
+  geoHouses: GeoHouse[];
   onVisibleChanged: (layerIndex: number, visible: boolean) => void;
 }
 
 export const LayerVisibleControl: React.FC<Props> = ({
-  layersVisible,
+  geoHouses,
   onVisibleChanged,
 }) => {
   return (
@@ -19,12 +20,12 @@ export const LayerVisibleControl: React.FC<Props> = ({
       }}
     >
       <div>图层管理</div>
-      {layersVisible.map((v, i) => (
+      {geoHouses.map((gh, i) => (
         <div key={i} style={{ display: "flex", gap: 8, fontSize: "0.8em" }}>
-          <div>图层{i + 1}</div>
+          <div>{gh.title}</div>
           <input
             type="checkbox"
-            checked={v}
+            checked={gh.visible}
             onChange={(e) => onVisibleChanged(i, e.target.checked)}
           ></input>
         </div>

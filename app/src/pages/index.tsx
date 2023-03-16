@@ -7,11 +7,12 @@ import Points1 from "../data/points1.json";
 import Points2 from "../data/points2.json";
 import Points3 from "../data/points3.json";
 import { LayerVisibleControl } from "@/components/LayerVisibleControl";
+import { GeoHouse } from "../types";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1Ijoiemh5MDIxNiIsImEiOiJjbGY3c29qM20wNHEwM3BtdjhpbDc2dzhyIn0.__1GnOIIG6VX31o6m7CQ4w"; // Set your mapbox token here
 
-const renderGeoJson = (data: GeoJSON, color: string, haloColor?: string) => (
+const renderGeoJson = ({ data, color, haloColor }: GeoHouse) => (
   <Source type="geojson" data={data}>
     <Layer
       type="circle"
@@ -38,7 +39,21 @@ const renderGeoJson = (data: GeoJSON, color: string, haloColor?: string) => (
 
 // https://github.com/visgl/react-map-gl/tree/master/examples/geojson
 function Home() {
-  const [layersVisible, setLayersVisible] = useState([true, true, true]);
+  const [geoHouses, seGeoHouses] = useState<GeoHouse[]>([
+    {
+      title: "图层1",
+      data: Points1 as GeoJSON,
+      color: "red",
+      visible: true,
+    },
+    {
+      title: "图层2",
+      data: Points2 as GeoJSON,
+      color: "blue",
+      haloColor: "white",
+      visible: true,
+    },
+  ]);
 
   return (
     <>
@@ -61,17 +76,14 @@ function Home() {
           mapboxAccessToken={MAPBOX_TOKEN}
           interactiveLayerIds={["data"]}
         >
-          {layersVisible[0] && renderGeoJson(Points1 as GeoJSON, "red")}
-          {layersVisible[1] && renderGeoJson(Points2 as GeoJSON, "yellow")}
-          {layersVisible[2] &&
-            renderGeoJson(Points3 as GeoJSON, "blue", "white")}
+          {geoHouses.map((gh) => gh.visible && renderGeoJson(gh))}
         </Map>
       </DeckGL>
       <LayerVisibleControl
-        layersVisible={layersVisible}
+        geoHouses={geoHouses}
         onVisibleChanged={(index, visible) => {
-          setLayersVisible((prev) =>
-            prev.map((v, i) => (i === index ? visible : v))
+          seGeoHouses((prev) =>
+            prev.map((v, i) => (i === index ? { ...v, visible } : v))
           );
         }}
       />
