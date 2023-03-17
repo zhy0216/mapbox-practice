@@ -8,8 +8,7 @@ import Points2 from "../data/points2.json";
 import { LayerManagerControl } from "@/components/LayerManagerControl";
 import { GeoHouse } from "../types";
 
-const MAPBOX_TOKEN =
-  "pk.eyJ1Ijoiemh5MDIxNiIsImEiOiJjbGY3c29qM20wNHEwM3BtdjhpbDc2dzhyIn0.__1GnOIIG6VX31o6m7CQ4w"; // Set your mapbox token here
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN; // Set your mapbox token here
 
 const renderGeoJson = ({ data, color, haloColor, id }: GeoHouse) => (
   <Source type="geojson" data={data} key={id}>
